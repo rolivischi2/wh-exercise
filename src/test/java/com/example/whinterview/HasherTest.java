@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 
 public class HasherTest {
 
-    Parser parser = new Parser();
-
     static Stream<Arguments> arguments(){
         return Stream.of(
                 Arguments.of(
@@ -90,7 +88,7 @@ public class HasherTest {
     @ParameterizedTest
     @MethodSource("arguments")
     void testHashAuthenticity(Message message) throws NoSuchAlgorithmException {
-        Assertions.assertThat(message.getStamp()).isEqualTo(parser.messageSha256ToBase64(message));
+        Assertions.assertThat(message.getStamp()).isEqualTo(Hasher.messageSha256ToBase64(message));
     }
 
 }

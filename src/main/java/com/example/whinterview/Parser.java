@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -38,7 +39,28 @@ public class Parser {
             }
             messageParts.add(nextLine);
         }
+    }
 
+    public void outputMessages(){
+        log.info("Store size: {}", this.messageStore.size());
+        this.messageStore.forEach((key, value) -> log.info("MessageStore Element with Hash {} and {}", key, value));
+    }
+
+    public void recomputeHashes() throws NoSuchAlgorithmException {
+        List<Message> messages = this.messageStore.entrySet().stream()
+                .filter(entry -> !entry.getKey().startsWith("0000")).map(Map.Entry::getValue).collect(Collectors.toList());
+
+        for(Message message: messages){
+            long nonce = 1000000;
+            String hash = message.getStamp();
+            while(!hash.startsWith("0000")){
+                nonce++;
+                hash = Hasher.messageSha256ToBase64(message.withNonce(Long.toString(nonce)));
+            }
+            log.info("Recomputed hash for message: {} to {} with new nonce: {}",message.getStamp(), hash, nonce);
+            this.messageStore.remove(message.getStamp());
+            this.messageStore.put(hash, message.withNonce(Long.toString(nonce)).withStamp(hash));
+        }
     }
 
     private void handleMessage(List<String> messageParts) throws ApplicationException, NoSuchAlgorithmException {
@@ -56,21 +78,16 @@ public class Parser {
         if(!message.isValid()){
             throw new ApplicationException("Message is not valid! Missing headers!");
         }
-        String hash = messageSha256ToBase64(message);
+        String hash = Hasher.messageSha256ToBase64(message);
         if(hash.equals(message.getStamp())){
             messageStore.put(hash, message);
         }
     }
 
     private void handleEndOfHeader(String input) throws ApplicationException {
-        if(input == null || !input.isBlank()){
+        if (input == null || !input.isBlank()) {
             throw new ApplicationException("Missing empty line after header section!");
         }
-    }
-
-    public void outputMessages(){
-        log.info("Store size: {}", this.messageStore.size());
-        this.messageStore.forEach((key, value) -> log.info("MessageStore Element with Hash {} and {}", key, value));
     }
 
 
@@ -85,16 +102,6 @@ public class Parser {
             return message.withNonce(splitHeader(part));
         }
         return message;
-    }
-
-
-    public String messageSha256ToBase64(Message message) throws NoSuchAlgorithmException {
-        //`Base64 ( SHA256-Hash ( from-email + nonce + to-email + nonce + message body ))
-        String hashString = message.getFrom() + message.getNonce() + message.getTo() + message.getNonce() + message.getBody();
-        byte[] b = hashString.getBytes(StandardCharsets.UTF_8);
-        MessageDigest digester = MessageDigest.getInstance("SHA-256");
-        digester.update(b);
-        return Base64.getEncoder().encodeToString(digester.digest());
     }
 
     private String  returnValidEmailField(String line) throws ApplicationException {
