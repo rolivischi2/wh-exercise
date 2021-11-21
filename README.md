@@ -11,7 +11,7 @@ When running, a CLI option for the input file has to
 be provided.
 
 ```bash
-mvn spring-boot:run -Drun.arguments=--i=src/main/resources/input.txt
+mvn spring-boot:run -Dspring-boot.run.arguments=--i=src/main/resources/input.txt
 ```
 
 
