@@ -24,7 +24,7 @@ public class HasherTest {
                                 .to("alice@example.com")
                                 .nonce("24830964")
                                 .stamp("0000JJTueU2utLQnAA0NIZ3NQZwGaskSQFkviXQyJsU=")
-                                .build()),
+                                .build(), true),
                 Arguments.of(
                         Message.builder()
                                 .body("""
@@ -38,7 +38,7 @@ public class HasherTest {
                                 .to("bob@example.com")
                                 .nonce("38385307")
                                 .stamp("0000f/fd+9Omj/DAQsaKtsmGLLnZYZIJVdw8ie5XEqo=")
-                                .build()),
+                                .build(), true),
                 Arguments.of(
                         Message.builder()
                                 .body("""
@@ -51,7 +51,7 @@ public class HasherTest {
                                 .to("alice@example.com")
                                 .nonce("0000")
                                 .stamp("0000E6UQCwLezm6KX4NCYtpeSGMvXa2Bjo6/enwk5I=")
-                                .build()),
+                                .build(), false),
                 Arguments.of(
                         Message.builder()
                                 .body("""
@@ -66,7 +66,7 @@ public class HasherTest {
                                 .to("alice@example.com")
                                 .nonce("96477")
                                 .stamp("nzRhw63S0vO3QuyGEyuEYupgNS4pj4PP5wucpjYnHOI=")
-                                .build()),
+                                .build(), true),
                 Arguments.of(
                         Message.builder()
                                 .body("""
@@ -80,15 +80,15 @@ public class HasherTest {
                                 .to("bob@example.com")
                                 .nonce("44774")
                                 .stamp("uCmo9nd5RLUiELC/hBC+MX8M1zTuCxBwtUvy09MqYIg=")
-                                .build())
+                                .build(), true)
         );
     }
 
 
     @ParameterizedTest
     @MethodSource("arguments")
-    void testHashAuthenticity(Message message) throws NoSuchAlgorithmException {
-        Assertions.assertThat(message.getStamp()).isEqualTo(Hasher.messageSha256ToBase64(message));
+    void testHashAuthenticity(Message message, boolean expectedValue) throws NoSuchAlgorithmException {
+        Assertions.assertThat(message.getStamp().equals(Hasher.messageSha256ToBase64(message))).isEqualTo(expectedValue);
     }
 
 }
