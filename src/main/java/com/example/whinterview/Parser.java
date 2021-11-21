@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -24,20 +23,22 @@ public class Parser {
 
     private final Map<String, Message> messageStore = new HashMap<>();
 
-    public void parseFile(String input) throws IOException, ApplicationException, NoSuchAlgorithmException {
+    public void parseFile(String input) throws ApplicationException, NoSuchAlgorithmException {
         Path path = Paths.get(input);
 
-        BufferedReader bufferedReader = Files.newBufferedReader(path);
-
-        List<String> messageParts = new ArrayList<>();
-        String nextLine;
-        while((nextLine = bufferedReader.readLine()) != null){
-            if(nextLine.matches("^\\.\\r?\\n?$")){
-                handleMessage(messageParts);
-                messageParts = new ArrayList<>();
-                continue;
+        try (BufferedReader bufferedReader = Files.newBufferedReader(path)){
+            List<String> messageParts = new ArrayList<>();
+            String nextLine;
+            while((nextLine = bufferedReader.readLine()) != null){
+                if(nextLine.matches("^\\.\\r?\\n?$")){
+                    handleMessage(messageParts);
+                    messageParts = new ArrayList<>();
+                    continue;
+                }
+                messageParts.add(nextLine);
             }
-            messageParts.add(nextLine);
+        } catch (IOException e){
+            log.error("Could not open file at {}", input);
         }
     }
 
