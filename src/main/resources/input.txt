@@ -1,0 +1,54 @@
+From: bob@example.com
+To: alice@example.com
+Stamp: 0000JJTueU2utLQnAA0NIZ3NQZwGaskSQFkviXQyJsU=
+Nonce: 24830964
+
+Hello Alice.
+I found some exciting new thing called bitcoin. Have you heard about it?
+Your friend,
+Bob
+.
+From: alice@example.com
+To: bob@example.com
+Stamp: 0000f/fd+9Omj/DAQsaKtsmGLLnZYZIJVdw8ie5XEqo=
+Nonce: 38385307
+
+Hello Bob,
+> I found some exciting new thing called bitcoin. Have you heard about it?
+
+I read something about it, sounds like a scam to me.
+Yours, Alice
+.
+From: SPAMBOT@example.com
+To: alice@example.com
+Stamp: 0000E6UQCwLezm6KX4NCYtpeSGMvXa2Bjo6/enwk5I=
+Nonce: 0000
+
+Hello Alice.
+DO YOU WANT TO MAKE MONEY FAST: CLICK HERE!
+
+XOXO SPAMBOT
+.
+From: bob@example.com
+To: alice@example.com
+Stamp: nzRhw63S0vO3QuyGEyuEYupgNS4pj4PP5wucpjYnHOI=
+Nonce: 96477
+
+Hello Alice.
+> I found some exciting new thing called bitcoin. Have you heard about it?
+>> I read something about it, sounds like a scam to me.
+
+but... all the fancy crypto! I must be good!
+Bob
+.
+From: alice@example.com
+To: bob@example.com
+Stamp: uCmo9nd5RLUiELC/hBC+MX8M1zTuCxBwtUvy09MqYIg=
+Nonce: 44774
+
+Hello Bob,
+> but... all the fancy crypto! I must be good!
+
+Don't be fooled, Bob. You will loose all your money if you dont get out soon enough.
+Yours, Alice
+.
