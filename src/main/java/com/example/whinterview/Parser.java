@@ -47,14 +47,20 @@ public class Parser {
     }
 
     public void recomputeHashes() throws NoSuchAlgorithmException {
+        List<Long> currentNonces = this.messageStore.values()
+                .stream()
+                .map(message -> Long.parseLong(message.getNonce())).collect(Collectors.toList());
         List<Message> messages = this.messageStore.entrySet().stream()
                 .filter(entry -> !entry.getKey().startsWith("0000")).map(Map.Entry::getValue).collect(Collectors.toList());
 
         for(Message message: messages){
-            long nonce = 1000000;
+            long nonce = Long.parseLong(message.getNonce());
             String hash = message.getStamp();
             while(!hash.startsWith("0000")){
                 nonce++;
+                while(currentNonces.contains(nonce)){
+                    nonce++;
+                }
                 hash = Hasher.messageSha256ToBase64(message.withNonce(Long.toString(nonce)));
             }
             log.info("Recomputed hash for message: {} to {} with new nonce: {}",message.getStamp(), hash, nonce);

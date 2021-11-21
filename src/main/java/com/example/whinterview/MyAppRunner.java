@@ -25,9 +25,8 @@ public class MyAppRunner implements ApplicationRunner {
 
         parser.parseFile(inputPath);
         parser.outputMessages();
-        //Will run forever trying to recalculate hashes.
-      //  parser.recomputeHashes();
-      //  parser.outputMessages();
+        parser.recomputeHashes();
+        parser.outputMessages();
     }
 
 

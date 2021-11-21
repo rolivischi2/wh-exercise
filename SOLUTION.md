@@ -19,3 +19,11 @@ used in Bitcoin mining and Email Spam aversion.
 The idea is to shift the responsibility to the sender's
 side by making the creation of desirable hashes
 significantly more difficult than verifying valid hashes.
+
+Recalculating the hash to fit a certain  format,
+by means of different nonces
+takes significant amount of time. This is how the
+algorithm works as intended.
+
+A spammer will not be computing a valid nonce for each message
+since they intend to send thousands of emails per second.
